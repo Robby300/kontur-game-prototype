@@ -1,0 +1,3 @@
+package game.kontur.prototype.episode;
+import game.kontur.prototype.domain.EpisodeModels.*;
+public final class EpisodeDirector {private final AcidFrontEpisode episode;public EpisodeDirector(){this.episode=new AcidFrontEpisode();}public EpisodeDirector(DiceRoller dice){this.episode=new AcidFrontEpisode(dice);}public EpisodeSessionState start(long seed){return episode.start(seed);}public EpisodeStep current(EpisodeSessionState s){return episode.current(s);}public TransitionResult decide(EpisodeSessionState s,PlayerDecision d){var next=episode.decide(s,d);return new TransitionResult(next,next.events().subList(s.events().size(),next.events().size()));}}
