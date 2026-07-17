@@ -29,6 +29,8 @@
 4. `IMPLEMENTATION_PLAN.md` — этапы реализации и ворота.
 5. `AGENTS.md` — правила для coding-агентов.
 6. `CODEX_TASK.md` — готовая первая задача для Codex CLI.
+7. `KONTUR_SOCIAL_COMPARISON.md` — отложенное до P2 направление прозрачного
+   сравнения убежищ.
 
 ## Связь с Relay-17
 
