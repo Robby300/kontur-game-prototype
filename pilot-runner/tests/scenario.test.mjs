@@ -1,6 +1,23 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { PACKETS, RISK_CASES, advanceSession, isTerminal, playerText, resolveTransition } from "../scenario.js";
+
+const presentationsSource = readFileSync(new URL("../../NARRATIVE_PRESENTATIONS.md", import.meta.url), "utf8");
+const appSource = readFileSync(new URL("../app.js", import.meta.url), "utf8");
+const normalizeVisibleText = (text) => text.replace(/\s+/g, " ").trim();
+
+function normativePresentations() {
+  return new Map(presentationsSource.split(/^## PR/m).slice(1).map((section) => {
+    const newline = section.indexOf("\n");
+    const shortId = section.slice(0, newline).trim();
+    const visible = section.slice(newline + 1)
+      .replace(/^```text\s*$/gm, "")
+      .replace(/^```\s*$/gm, "")
+      .replace(/^[12]\.\s+/gm, "");
+    return [`NRV04-PR${shortId}`, normalizeVisibleText(visible)];
+  }));
+}
 
 const risks = Object.keys(RISK_CASES);
 const first = ["KEEP_ASHA_ON_CHANNEL", "VERIFY_CASSETTE_SEAL"];
@@ -55,6 +72,20 @@ test("all 19 packets are reachable and references resolve", () => {
   }
 });
 
+test("all participant presentations match the normative PR01-PR19 text", () => {
+  const normative = normativePresentations();
+  assert.equal(normative.size, 19);
+  for (const [packetId, packet] of Object.entries(PACKETS)) {
+    assert.equal(normalizeVisibleText(playerText(packetId)), normative.get(packet.presentationId), packet.presentationId);
+  }
+});
+
+test("no ASCII map contains a line starting with plus", () => {
+  for (const [packetId, packet] of Object.entries(PACKETS)) {
+    assert.equal(packet.map.split("\n").some((line) => line.startsWith("+")), false, packetId);
+  }
+});
+
 test("terminal water and physical state match PathAudit", () => {
   for (const [id,values] of Object.entries(expectedTerminal)) {
     const state=PACKETS[id].terminal;
@@ -63,8 +94,38 @@ test("terminal water and physical state match PathAudit", () => {
 });
 
 test("player-visible text contains no raw IDs", () => {
-  const forbidden=["KEEP_ASHA_ON_CHANNEL","VERIFY_CASSETTE_SEAL","ANCHOR_WITH_KROT","TETHER_WITH_IGLA","FREE_KROT","NRV04-P","NRV04-PR","PEOPLE_OVER_FILTER","COSTLY_WATER"];
-  for (const id of Object.keys(PACKETS)) for (const token of forbidden) assert.equal(playerText(id).includes(token),false,`${id} leaked ${token}`);
+  const packets=Object.values(PACKETS);
+  const forbidden=new Set([
+    ...packets.map((packet)=>packet.id),
+    ...packets.map((packet)=>packet.presentationId),
+    ...packets.flatMap((packet)=>packet.choices.map((item)=>item.id)),
+    ...packets.filter((packet)=>packet.terminal).map((packet)=>packet.terminal.family),
+  ]);
+  for (const packet of packets) for (const token of forbidden) {
+    assert.equal(playerText(packet.id).includes(token),false,`${packet.id} leaked ${token}`);
+  }
+});
+
+test("terminal presentations retain character lines and exact consequences", () => {
+  const required = {
+    "NRV04-P10": "Марина: «Мы отступили с человеком и машинами. Следующая попытка потребует воды или деталей».",
+    "NRV04-P11": "Марина: «Мы отступили; новая попытка возможна после ремонта манипулятора».",
+    "NRV04-P12": "Рем: «Это не герметизация. Вода идёт к ней прямо сейчас».",
+    "NRV04-P14": "Марина: «KROT не потерян, но он не с нами».",
+    "NRV04-P15": "Марина: «IGLA потеряна внизу; это цена ручного подъёма».",
+    "NRV04-P17": "она не потеряна и не оставлена в шахте, но сегодня не вернётся в КОНТУР.",
+    "NRV04-P18": "теперь два поселения знают один маршрут и отвечают за него вместе.",
+  };
+  for (const [packetId, line] of Object.entries(required)) assert.match(playerText(packetId), new RegExp(line.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+});
+
+test("report is gated by six answers and the exact mandatory debrief", () => {
+  const debrief = "«Пара двух шестигранных кубиков в этой сессии была назначена до начала прохождения. Так три небольшие тестовые сессии покрывают осложнение, успех с ценой и преимущество. Это способ проверки сценария, а не правило будущей игры».";
+  assert.equal(appSource.includes(debrief), true);
+  assert.match(appSource, /questions\.findIndex\([^;]+\.trim\(\)/);
+  assert.match(appSource, /areas\[emptyIndex\]\.focus\(\)/);
+  assert.match(appSource, /"Показать отчёт"/);
+  assert.match(appSource, /!answersComplete\(state\) \|\| !state\.reportShown/);
 });
 
 test("session state cannot choose the previous option twice", () => {
