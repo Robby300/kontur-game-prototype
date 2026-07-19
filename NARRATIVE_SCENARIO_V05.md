@@ -1,6 +1,6 @@
 # NARRATIVE_SCENARIO_V05 — «Тихий резервуар»
 
-Статус: `W1 SCENARIO DRAFT`, docs-only, неканонический исследовательский
+Статус: `FROZEN W1 SCENARIO`, docs-only, неканонический исследовательский
 эпизод. Он наследует граф frozen v0.4 и не меняет механику «Кислотного фронта».
 
 ## FrozenScenarioGraph
