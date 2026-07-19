@@ -1,7 +1,7 @@
 # KROT — модель состояния v0.5
 
 **Версии:** `scenarioVersion=v0.5.0-w1`,
-`contentVersion=v0.5.0-w1-draft.1`.
+`contentVersion=v0.5.0-w1-draft.2`.
 **Статус:** нормативная docs-only модель W1; реализация в коде не разрешена
 этим документом.
 
