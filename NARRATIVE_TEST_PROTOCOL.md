@@ -1,6 +1,6 @@
 # NARRATIVE_TEST_PROTOCOL — закрытый протокол NG1
 
-Версии: `scenarioVersion=v0.4.0-n1`, `contentVersion=v0.4.0-n1-draft.3`.
+Версии: `scenarioVersion=v0.4.0-n1`, `contentVersion=v0.4.0-n1-draft.4`.
 Участнику не показываются этот файл, граф, packet ID, choice ID, terminal ID,
 скрытые факты и назначенная пара до броска.
 
