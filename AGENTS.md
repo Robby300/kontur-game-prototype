@@ -6,25 +6,29 @@
 Технические ворота `P1-TECH` пройдены. Владельческий тест его статической
 консольной подачи завершён как `P1-OWNER = FAILED`. Ручной адаптивный narrative
 smoke test получил `CONDITIONAL PASS`, но `NG1`, P2 и P3 закрыты. Текущий
-разрешённый результат —
-docs-only проектирование narrative v0.4, один замороженный сценарий и один
-неинтегрированный визуальный макет, а не новый production-эпизод.
+статус: `W0 = ACCEPTED`; W1 является текущим docs-only этапом. Narrative v0.4
+остаётся замороженным историческим baseline, а W1 требует отдельного принятия
+владельцем и не является новым production-эпизодом.
 
 Отвечай владельцу по-русски. Имена Java-типов и стабильные ID пиши по-английски.
 
 ## Источники истины
 
-Для текущей docs-only задачи читай в таком порядке:
+Authoritative sources для W1 читай в таком порядке:
 
-1. `NARRATIVE_V04_PLAN.md` — текущий разрешённый порядок работы.
-2. `NARRATIVE_DIRECTOR_SPEC.md` — границы `FrozenScenarioGraph`,
-   `PublicScenePacket`,
-   `NarrativeRenderer`, `ScenePresentation` и `SceneLayout`.
-3. `NARRATIVE_PLAYTEST_REPORT.md` — наблюдения ручного narrative smoke test и
-   критерии `NG1`.
-4. `VISUAL_DIRECTION.md` — границы единственного визуального макета.
-5. `P1_OWNER_PLAYTEST.md` — фактический результат владельческого теста.
-6. `KONTUR_V03_GAME_DESIGN.md` — продуктовая гипотеза и границы.
+1. `KONTUR_WORLD_BIBLE_V05.md`.
+2. `PLAYER_KNOWLEDGE_LAYERS.md`.
+3. `NARRATIVE_V05_W1_DECISIONS.md`.
+4. `KROT_STATE_MODEL_V05.md`.
+5. `NARRATIVE_SCENARIO_V05.md`.
+6. `NARRATIVE_SCENE_PACKETS_V05.md`.
+7. `NARRATIVE_PRESENTATIONS_V05.md`.
+8. `NARRATIVE_TEST_PROTOCOL_V05.md`.
+
+`NARRATIVE_V04_PLAN.md`, `NARRATIVE_DIRECTOR_SPEC.md`,
+`NARRATIVE_PLAYTEST_REPORT.md`, `VISUAL_DIRECTION.md`, `P1_OWNER_PLAYTEST.md` и
+`KONTUR_V03_GAME_DESIGN.md` сохраняют исторические решения, архитектурные
+границы и наблюдения, но не переопределяют принятый W0 или документы W1.
 
 `ACID_FRONT_SPEC.md`, `REQUIREMENTS.md`, `IMPLEMENTATION_PLAN.md` и
 `CODEX_TASK.md` описывают реализованный исторический baseline v0.3. Они не
@@ -42,6 +46,10 @@ docs-only проектирование narrative v0.4, один замороже
 - авторские `PublicScenePacket` и `ScenePresentation` как документы или данные
   прототипа;
 - один неинтегрированный визуальный макет по `VISUAL_DIRECTION.md`.
+
+До отдельного принятия W1 запрещено изменять Java, Gradle, runner, assets,
+visual slice, Telegram-интеграцию и 3D. Успешные Markdown-проверки подтверждают
+целостность документов, но не означают автоматического принятия W1.
 
 Запрещено до ворот P3:
 
