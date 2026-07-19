@@ -79,6 +79,7 @@ textarea {
 .notice { border-left: 4px solid var(--danger); padding-left: .8rem; }
 .pending-result { border: 1px dashed var(--line); border-radius: 8px; padding: .8rem; color: var(--muted); }
 .reveal-beat { margin: .8rem 0; padding: .15rem .8rem; border-left: 3px solid var(--line); }
+.reveal-beat, .choices button { scroll-margin-block: 1rem; }
 .dice-result { border: 1px solid var(--accent); border-radius: 8px; font-weight: 800; font-size: 1.08rem; }
 .cause-line { border-left: 4px solid var(--danger); padding-left: .8rem; font-weight: 700; }
 .status-grid { display: grid; gap: .75rem; margin: 1rem 0; }

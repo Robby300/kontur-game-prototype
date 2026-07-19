@@ -12,7 +12,7 @@ python3 -m http.server 8080
 ```
 
 Откройте `http://localhost:8080`. Runner использует
-`runnerVersion=v0.5.0-w2-draft.1`, `scenarioVersion=v0.5.0-w1` и
+`runnerVersion=v0.5.0-w2-draft.2`, `scenarioVersion=v0.5.0-w1` и
 `contentVersion=v0.5.0-w1-draft.2`. Для технической проверки риска используйте
 `?case=low`, `?case=mid` или `?case=high`. Без параметра case назначается
 один раз через Web Crypto и сохраняется в `sessionStorage` до завершения либо

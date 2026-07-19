@@ -8,15 +8,15 @@ import {
   buildReport,
   choicesRevealed,
   isTerminal,
+  shouldShowIntro,
   terminalCause,
 } from "./scenario.js";
 import { VISUAL_HEIGHT, VISUAL_WIDTH, visualAssetFor, visualModeFromSearch } from "./visual.js";
 
 const STORAGE_KEY = "kontur-narrative-v05-w2-runner";
 const root = document.querySelector("#app");
-const params = new URLSearchParams(location.search);
-const queryCase = params.get("case")?.toUpperCase();
-const visualMode = visualModeFromSearch(location.search);
+const requestedVisualMode = () => visualModeFromSearch(location.search);
+const requestedRiskCase = () => new URLSearchParams(location.search).get("case")?.toUpperCase();
 
 function randomCase() {
   const list = ["LOW", "MID", "HIGH"];
@@ -42,9 +42,12 @@ function el(tag, text, className) {
   return node;
 }
 
-function resetView() {
+function resetView(focusTop = true) {
   root.replaceChildren();
-  root.focus();
+  if (focusTop) {
+    root.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
 }
 
 function currentMap(state, data) {
@@ -55,17 +58,9 @@ function currentMap(state, data) {
   return PACKETS[routeStep?.packetId]?.map ?? data.map;
 }
 
-function currentWater(state, data) {
-  if (!data.beats.length) return data.water;
-  const safeAt = state.packetId === "NRV05-P05" ? 6 : 2;
-  if (state.revealStep >= safeAt) return data.water;
-  const routeStep = state.history.at(-1);
-  return PACKETS[routeStep?.packetId]?.water ?? data.water;
-}
-
 function appendSceneMedia(container, state, data) {
   const map = currentMap(state, data);
-  if (!visualMode) {
+  if (!state.visualMode) {
     container.append(el("pre", map, "text-map"));
     return;
   }
@@ -84,7 +79,7 @@ function appendSceneMedia(container, state, data) {
     if (asset.caption) figure.append(el("figcaption", asset.caption));
     container.append(figure);
   } else {
-    const text = data.beats.length && state.revealStep < (state.packetId === "NRV05-P05" ? 4 : 2)
+    const text = data.beats.length && state.revealStep < (state.packetId === "NRV05-P05" ? 5 : 2)
       ? "Наблюдаемое последствие ещё не раскрыто."
       : "Для этой сцены отдельный визуальный кадр не подготовлен.";
     container.append(el("p", text, "visual-placeholder notice"));
@@ -117,17 +112,17 @@ function appendStatuses(container, data, revealStep = Number.POSITIVE_INFINITY) 
 
 function start() {
   const previous = load();
+  const queryCase = requestedRiskCase();
   const forced = ["LOW", "MID", "HIGH"].includes(queryCase) ? queryCase : null;
   save({
     startedAt: new Date().toISOString(),
     riskCase: forced ?? randomCase(),
     packetId: "NRV05-P01",
     revealStep: 0,
-    introSeen: false,
     history: [],
     restarted: Boolean(previous),
     answers: {},
-    visualMode,
+    visualMode: requestedVisualMode(),
   });
   render();
 }
@@ -137,15 +132,16 @@ function choose(choiceId, buttons) {
   if (!state || isTerminal(state.packetId) || !choicesRevealed(state)) return;
   buttons.forEach((button) => { button.disabled = true; });
   const next = advanceSession(state, choiceId);
-  save(next);
+  save(isTerminal(next.packetId) ? { ...next, endedAt: new Date().toISOString() } : next);
   render();
 }
 
 function revealNext() {
   const state = load();
   if (!state || isTerminal(state.packetId)) return;
-  save(advanceReveal(state));
-  render();
+  const next = advanceReveal(state);
+  save(next);
+  render({ revealNavigation: true });
 }
 
 function renderStart() {
@@ -163,12 +159,11 @@ function renderStart() {
 }
 
 function appendIntro(container, state) {
-  if (state.introSeen) return;
+  if (!shouldShowIntro(state)) return;
   const intro = el("section", null, "intro");
   intro.append(el("h2", "До аварии"));
   INTRO.paragraphs.forEach((paragraph) => intro.append(el("p", paragraph)));
   container.append(intro);
-  save({ ...state, introSeen: true });
 }
 
 function appendChoices(container, data) {
@@ -189,6 +184,8 @@ function renderReveal(container, state, data) {
   } else {
     data.beats.slice(0, state.revealStep).forEach((beat, index) => {
       const block = el("section", null, index === 0 ? "reveal-beat dice-result" : "reveal-beat");
+      block.dataset.revealStep = String(index + 1);
+      block.tabIndex = -1;
       beat.forEach((line) => block.append(el("p", line)));
       container.append(block);
     });
@@ -205,7 +202,18 @@ function renderReveal(container, state, data) {
   }
 }
 
-function render() {
+function focusRevealTarget(state) {
+  const data = PACKETS[state.packetId];
+  const target = choicesRevealed(state)
+    ? root.querySelector(".choices button")
+    : root.querySelector(`[data-reveal-step="${state.revealStep}"]`);
+  if (!target) return;
+  target.focus({ preventScroll: true });
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ block: "center", behavior: reducedMotion ? "auto" : "smooth" });
+}
+
+function render({ revealNavigation = false } = {}) {
   const state = load();
   if (!state) return renderStart();
   if (isTerminal(state.packetId)) {
@@ -214,10 +222,10 @@ function render() {
     return renderTerminal(state);
   }
 
-  resetView();
+  resetView(!revealNavigation);
   const data = PACKETS[state.packetId];
-  root.append(el("div", currentWater(state, data), "panel water"));
-  const scene = el("article", null, `panel${state.packetId === "NRV05-P05" && state.revealStep >= 3 ? " accident" : ""}`);
+  root.append(el("div", data.water, "panel water"));
+  const scene = el("article", null, `panel${state.packetId === "NRV05-P05" && state.revealStep === 3 ? " accident" : ""}`);
   scene.append(el("h1", "Тихий резервуар"));
   appendIntro(scene, state);
   scene.append(el("h2", data.beats.length ? "Результат маршрута" : "Текущая сцена"));
@@ -229,14 +237,10 @@ function render() {
     appendChoices(scene, data);
   }
   root.append(scene);
+  if (revealNavigation) focusRevealTarget(state);
 }
 
-function renderTerminal(savedState) {
-  let state = savedState;
-  if (!state.endedAt) {
-    save({ ...state, endedAt: new Date().toISOString() });
-    state = load();
-  }
+function renderTerminal(state) {
   resetView();
   const data = PACKETS[state.packetId];
   const box = el("article", null, "panel terminal");

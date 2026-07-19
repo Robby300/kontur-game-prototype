@@ -20,7 +20,7 @@ export const VISUAL_ASSETS = Object.freeze({
     src: "assets/visual-v1/03-krot-mid-crisis.png",
     alt: "Разрушенная рама зажала KROT у затвора; Аша стоит на площадке рядом с треснувшей кассетой, IGLA остаётся наверху.",
     loading: "lazy",
-    minRevealStep: 4,
+    minRevealStep: 5,
   }),
   "NRV05-P14": Object.freeze({
     src: "assets/visual-v1/04-costly-water-epilogue.png",

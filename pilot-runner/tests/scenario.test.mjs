@@ -22,6 +22,7 @@ import {
   resolveTransition,
   runnerVersion,
   scenarioVersion,
+  shouldShowIntro,
   terminalCause,
 } from "../scenario.js";
 import {
@@ -110,7 +111,7 @@ function krotValues(state) {
 }
 
 test("runner keeps frozen W1 versions and adds an independent W2 runner version", () => {
-  assert.equal(runnerVersion, "v0.5.0-w2-draft.1");
+  assert.equal(runnerVersion, "v0.5.0-w2-draft.2");
   assert.equal(scenarioVersion, "v0.5.0-w1");
   assert.equal(contentVersion, "v0.5.0-w1-draft.2");
   assert.match(appSource, /kontur-narrative-v05-w2-runner/);
@@ -161,14 +162,27 @@ test("frozen participant presentations match PR01-PR09 and PR11-PR19 exactly", (
   }
 });
 
-test("NRV05 intro is exact, shown by app, and is not a packet or decision", () => {
+test("NRV05 intro is exact and remains derived from P01 with empty history", () => {
   const match = presentationsSource.match(/^## NRV05-INTRO\n([\s\S]*?)\nПосле intro/m);
   assert(match);
   assert.equal(normalize(INTRO.paragraphs.join("\n")), normalize(match[1]));
   assert.equal(Object.hasOwn(PACKETS, INTRO.id), false);
   assert.equal(INTRO.paragraphs.some((text) => /\b[12]\.\s/.test(text)), false);
+  assert.equal(shouldShowIntro({ packetId: "NRV05-P01", history: [] }), true);
+  assert.equal(shouldShowIntro({ packetId: "NRV05-P01", history: [{ packetId: "NRV05-P01" }] }), false);
+  assert.equal(shouldShowIntro({ packetId: "NRV05-P02", history: [] }), false);
   assert.match(appSource, /appendIntro\(scene, state\)/);
-  assert.match(appSource, /introSeen: false/);
+  assert.doesNotMatch(appSource, /introSeen/);
+  const appendIntroSource = appSource.match(/function appendIntro[\s\S]*?\n}/)?.[0] ?? "";
+  assert.doesNotMatch(appendIntroSource, /save\(/);
+});
+
+test("all risk packets expose current 16-hour water state from revealStep zero", () => {
+  for (const id of ["NRV05-P04", "NRV05-P05", "NRV05-P06", "NRV05-P07", "NRV05-P08", "NRV05-P09"]) {
+    assert.equal(PACKETS[id].water, "Вода: 16 ч · Рассол: 2 ч", id);
+  }
+  assert.match(appSource, /root\.append\(el\("div", data\.water, "panel water"\)\)/);
+  assert.doesNotMatch(appSource, /currentWater/);
 });
 
 test("terminal state matrix, water arithmetic and KROT fields match PathAudit", () => {
@@ -325,8 +339,10 @@ test("visual mapping uses only approved packets, exact dimensions and reveal gat
   });
   assert.equal(VISUAL_WIDTH, 1672);
   assert.equal(VISUAL_HEIGHT, 941);
-  assert.equal(visualAssetFor("NRV05-P05", 3), null);
-  assert.equal(visualAssetFor("NRV05-P05", 4)?.src.endsWith("03-krot-mid-crisis.png"), true);
+  assert.equal(visualAssetFor("NRV05-P05", 4), null);
+  assert.equal(visualAssetFor("NRV05-P05", 5)?.src.endsWith("03-krot-mid-crisis.png"), true);
+  assert.match(revealedText("NRV05-P05", 5), /опоры зажаты разрушенной рамой/);
+  assert.match(revealedText("NRV05-P05", 5), /36 часов вместо 72/);
   assert.equal(visualAssetFor("NRV05-P14", 0)?.src.endsWith("04-costly-water-epilogue.png"), true);
   assert.match(VISUAL_ASSETS["NRV05-P02"].caption, /двух возможных маршрутов; ни один ещё не выбран/);
 });
@@ -364,8 +380,19 @@ test("runner contains no network API or automatic data submission", () => {
 
 test("default rendering remains textual and reduced motion is supported", () => {
   const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
-  assert.match(appSource, /if \(!visualMode\)/);
+  assert.match(appSource, /if \(!state\.visualMode\)/);
+  assert.match(appSource, /visualMode: requestedVisualMode\(\)/);
+  assert.doesNotMatch(appSource, /const visualMode =/);
   assert.match(appSource, /container\.append\(el\("pre", map, "text-map"\)\)/);
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /overflow-x: hidden/);
+});
+
+test("reveal navigation focuses the new beat or first choice and pulses only at collapse", () => {
+  assert.match(appSource, /state\.packetId === "NRV05-P05" && state\.revealStep === 3/);
+  assert.doesNotMatch(appSource, /state\.revealStep >= 3/);
+  assert.match(appSource, /target\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(appSource, /target\.scrollIntoView\(\{ block: "center", behavior: reducedMotion \? "auto" : "smooth" \}\)/);
+  assert.match(appSource, /choicesRevealed\(state\)[\s\S]*root\.querySelector\("\.choices button"\)/);
+  assert.match(appSource, /render\(\{ revealNavigation: true \}\)/);
 });

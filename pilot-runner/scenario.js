@@ -1,4 +1,4 @@
-export const runnerVersion = "v0.5.0-w2-draft.1";
+export const runnerVersion = "v0.5.0-w2-draft.2";
 export const scenarioVersion = "v0.5.0-w1";
 export const contentVersion = "v0.5.0-w1-draft.2";
 
@@ -290,6 +290,10 @@ export function revealCount(packetId) {
 export function choicesRevealed(session) {
   const count = revealCount(session.packetId);
   return count === 0 || session.revealStep >= count;
+}
+
+export function shouldShowIntro(session) {
+  return session.packetId === "NRV05-P01" && session.history.length === 0;
 }
 
 export function advanceReveal(session) {
