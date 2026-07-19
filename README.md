@@ -58,6 +58,24 @@ Narrative v0.4 и его замороженные N1-документы оста
 baseline. World v0.5 принят владельцем как docs-only рабочий канон:
 `W0 = ACCEPTED`. Это не открывает `NG1`, P2 или production-разработку.
 
+### Narrative v0.5 W1
+
+- [NARRATIVE_V05_W1_DECISIONS.md](NARRATIVE_V05_W1_DECISIONS.md) — границы W1,
+  сохранённые инварианты и три разрешённых изменения состояния KROT.
+- [KROT_STATE_MODEL_V05.md](KROT_STATE_MODEL_V05.md) — независимые поля
+  исправности, мобильности, места, телеметрии и маяка.
+- [NARRATIVE_SCENARIO_V05.md](NARRATIVE_SCENARIO_V05.md) — граф и полная
+  матрица 24 путей в namespace NRV05.
+- [NARRATIVE_SCENE_PACKETS_V05.md](NARRATIVE_SCENE_PACKETS_V05.md) —
+  нормативный реестр 19 публичных пакетов.
+- [NARRATIVE_PRESENTATIONS_V05.md](NARRATIVE_PRESENTATIONS_V05.md) — один
+  неигровой intro и 19 дословных presentations.
+- [NARRATIVE_TEST_PROTOCOL_V05.md](NARRATIVE_TEST_PROTOCOL_V05.md) — закрытый
+  протокол проверки W1.
+
+Статус: `W1 = DRAFT, REVIEW REQUIRED`. Успешные проверки документации не
+означают принятия W1 и не открывают W2, `NG1` или production-разработку.
+
 ## Связь с Relay-17
 
 `research-prototype-relay17` остаётся самостоятельным исследовательским
@@ -67,8 +85,8 @@ baseline. World v0.5 принят владельцем как docs-only рабо
 
 ## Текущий следующий шаг
 
-Текущий этап — W1: подготовить и заморозить новую версию presentations с
-коротким прологом и причинно ясным MID-событием. До заморозки W1 не менять
-runner, типизированное состояние, граф из 24 путей, ресурсы или terminal states.
-Внешние прохождения `NG1`, следующий игровой день, Telegram, LLM в runtime и
-production-3D на этом шаге не начинаются.
+Текущий этап — review W1: проверить новую версию presentations, модель KROT и
+сохранение графа из 24 путей. До отдельного принятия W1 не менять runner,
+Java, Gradle, assets, visual slice, типизированное состояние, ресурсы или
+terminal states. W2, внешние прохождения `NG1`, следующий игровой день,
+Telegram, LLM в runtime и production-3D на этом шаге не начинаются.
