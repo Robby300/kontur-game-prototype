@@ -35,12 +35,22 @@ initial: waterMinutes=1080, brineMinutes=240, cassette=LOCKED,
 asha=TRAPPED_ON_RADIO, KROT=UPPER_BRIDGE_OPERATIONAL,
 IGLA=UPPER_BRIDGE_OPERATIONAL
 
-hidden: assignedRiskCase in {2+3, 3+4, 5+5}; anchor corrosion;
-tether cable guide; dry bypass on >=10.
+publicRiskClues:
+- anchor edge is corroded;
+- tether cable guide is hidden below the muddy brine.
+
+hidden:
+- assignedRiskCase in {2+3, 3+4, 5+5};
+- exact consequence of anchor corrosion;
+- exact consequence of the submerged cable guide;
+- dry bypass on >=10.
 ```
 
-До броска скрыты только строка `hidden` и назначенная пара. Марина, Аша и Рем
-знают только публичную планировку; ведущий не добавляет фактов.
+До броска игрок видит публичные источники риска: корродированную кромку и
+скрытую под мутным рассолом направляющую троса. Назначенная пара и конкретное
+последствие каждого источника остаются скрытыми. Публичные признаки обозначают,
+что подвергается риску, но не обещают определённый исход. Марина, Аша и Рем
+знают только публичную планировку и эти признаки; ведущий не добавляет фактов.
 
 ### Нормативная арифметика воды
 
