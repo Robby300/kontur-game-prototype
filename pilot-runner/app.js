@@ -58,6 +58,24 @@ function currentMap(state, data) {
   return PACKETS[routeStep?.packetId]?.map ?? data.map;
 }
 
+function createSceneFigure(asset, { crisis = false } = {}) {
+  const figure = el("figure", null, crisis ? "scene-visual crisis-visual" : "scene-visual");
+  if (crisis) {
+    figure.dataset.crisisVisual = "true";
+    figure.tabIndex = -1;
+  }
+  const image = document.createElement("img");
+  image.src = asset.src;
+  image.alt = asset.alt;
+  image.width = VISUAL_WIDTH;
+  image.height = VISUAL_HEIGHT;
+  image.loading = asset.loading;
+  image.decoding = "async";
+  figure.append(image);
+  if (asset.caption) figure.append(el("figcaption", asset.caption));
+  return figure;
+}
+
 function appendSceneMedia(container, state, data) {
   const map = currentMap(state, data);
   if (!state.visualMode) {
@@ -66,19 +84,10 @@ function appendSceneMedia(container, state, data) {
   }
 
   const asset = visualAssetFor(state.packetId, state.revealStep);
-  if (asset) {
-    const figure = el("figure", null, "scene-visual");
-    const image = document.createElement("img");
-    image.src = asset.src;
-    image.alt = asset.alt;
-    image.width = VISUAL_WIDTH;
-    image.height = VISUAL_HEIGHT;
-    image.loading = asset.loading;
-    image.decoding = "async";
-    figure.append(image);
-    if (asset.caption) figure.append(el("figcaption", asset.caption));
-    container.append(figure);
-  } else {
+  const deferredCrisis = state.packetId === "NRV05-P05" && Boolean(asset);
+  if (asset && !deferredCrisis) {
+    container.append(createSceneFigure(asset));
+  } else if (!deferredCrisis) {
     const text = data.beats.length && state.revealStep < (state.packetId === "NRV05-P05" ? 5 : 2)
       ? "Наблюдаемое последствие ещё не раскрыто."
       : "Для этой сцены отдельный визуальный кадр не подготовлен.";
@@ -89,6 +98,12 @@ function appendSceneMedia(container, state, data) {
   details.open = matchMedia("(min-width: 780px)").matches;
   details.append(el("summary", "Текстовая схема сцены"), el("pre", map, "text-map"));
   container.append(details);
+}
+
+function appendP05CrisisVisual(container, state) {
+  if (!state.visualMode || state.packetId !== "NRV05-P05") return;
+  const asset = visualAssetFor(state.packetId, state.revealStep);
+  if (asset) container.append(createSceneFigure(asset, { crisis: true }));
 }
 
 function appendStatuses(container, data, revealStep = Number.POSITIVE_INFINITY) {
@@ -188,6 +203,7 @@ function renderReveal(container, state, data) {
       block.tabIndex = -1;
       beat.forEach((line) => block.append(el("p", line)));
       container.append(block);
+      if (index + 1 === 5) appendP05CrisisVisual(container, state);
     });
     appendStatuses(container, data, state.revealStep);
   }
@@ -203,9 +219,10 @@ function renderReveal(container, state, data) {
 }
 
 function focusRevealTarget(state) {
-  const data = PACKETS[state.packetId];
   const target = choicesRevealed(state)
     ? root.querySelector(".choices button")
+    : state.packetId === "NRV05-P05" && state.revealStep === 5
+      ? root.querySelector('[data-crisis-visual="true"]')
     : root.querySelector(`[data-reveal-step="${state.revealStep}"]`);
   if (!target) return;
   target.focus({ preventScroll: true });

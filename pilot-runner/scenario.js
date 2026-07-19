@@ -1,4 +1,4 @@
-export const runnerVersion = "v0.5.0-w2-draft.2";
+export const runnerVersion = "v0.5.0-w2-draft.3";
 export const scenarioVersion = "v0.5.0-w1";
 export const contentVersion = "v0.5.0-w1-draft.2";
 

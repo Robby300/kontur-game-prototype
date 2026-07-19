@@ -12,7 +12,7 @@ python3 -m http.server 8080
 ```
 
 Откройте `http://localhost:8080`. Runner использует
-`runnerVersion=v0.5.0-w2-draft.2`, `scenarioVersion=v0.5.0-w1` и
+`runnerVersion=v0.5.0-w2-draft.3`, `scenarioVersion=v0.5.0-w1` и
 `contentVersion=v0.5.0-w1-draft.2`. Для технической проверки риска используйте
 `?case=low`, `?case=mid` или `?case=high`. Без параметра case назначается
 один раз через Web Crypto и сохраняется в `sessionStorage` до завершения либо
@@ -21,11 +21,13 @@ python3 -m http.server 8080
 Необязательный visual mode включается только точным параметром `?visual=1`.
 Без параметра, при `?visual=0` и неизвестном значении runner остаётся текстовым.
 Изображения дополняют текстовую схему и не меняют решений или исходов.
+В кризисной сцене P05 кадр появляется после пятого раскрытого такта, вслед за
+описанием состояния KROT, и не опережает бросок или предыдущие последствия.
 
 Проверки:
 
 ```bash
-node --test tests/scenario.test.mjs
+node --test tests/*.test.mjs
 ```
 
 Runner не отправляет данные в сеть. Отчёт копируется или скачивается только по

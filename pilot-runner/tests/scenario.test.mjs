@@ -111,7 +111,7 @@ function krotValues(state) {
 }
 
 test("runner keeps frozen W1 versions and adds an independent W2 runner version", () => {
-  assert.equal(runnerVersion, "v0.5.0-w2-draft.2");
+  assert.equal(runnerVersion, "v0.5.0-w2-draft.3");
   assert.equal(scenarioVersion, "v0.5.0-w1");
   assert.equal(contentVersion, "v0.5.0-w1-draft.2");
   assert.match(appSource, /kontur-narrative-v05-w2-runner/);
@@ -395,4 +395,12 @@ test("reveal navigation focuses the new beat or first choice and pulses only at 
   assert.match(appSource, /target\.scrollIntoView\(\{ block: "center", behavior: reducedMotion \? "auto" : "smooth" \}\)/);
   assert.match(appSource, /choicesRevealed\(state\)[\s\S]*root\.querySelector\("\.choices button"\)/);
   assert.match(appSource, /render\(\{ revealNavigation: true \}\)/);
+});
+
+test("P05 crisis visual is inserted after beat five and receives step-five focus", () => {
+  assert.match(appSource, /if \(index \+ 1 === 5\) appendP05CrisisVisual\(container, state\)/);
+  assert.match(appSource, /state\.packetId === "NRV05-P05" && state\.revealStep === 5[\s\S]*root\.querySelector\('\[data-crisis-visual="true"\]'\)/);
+  assert.match(appSource, /figure\.dataset\.crisisVisual = "true"/);
+  assert.match(appSource, /figure\.tabIndex = -1/);
+  assert.match(appSource, /const deferredCrisis = state\.packetId === "NRV05-P05" && Boolean\(asset\)/);
 });
