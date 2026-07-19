@@ -2,7 +2,7 @@
 
 **Версии:** `scenarioVersion=v0.5.0-w1`,
 `contentVersion=v0.5.0-w1-draft.2`.
-**Статус:** docs-only W1 draft; W0 принят владельцем.
+**Статус:** `ACCEPTED / FROZEN`; нормативные docs-only решения W1.
 
 ## 1. Объём W1
 

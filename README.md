@@ -73,8 +73,8 @@ baseline. World v0.5 принят владельцем как docs-only рабо
 - [NARRATIVE_TEST_PROTOCOL_V05.md](NARRATIVE_TEST_PROTOCOL_V05.md) — закрытый
   протокол проверки W1.
 
-Статус: `W1 = DRAFT, REVIEW REQUIRED`. Успешные проверки документации не
-означают принятия W1 и не открывают W2, `NG1` или production-разработку.
+Статус: `W1 = ACCEPTED / FROZEN` на
+`contentVersion=v0.5.0-w1-draft.2`. Текущий следующий этап — W2.
 
 ## Связь с Relay-17
 
@@ -85,8 +85,8 @@ baseline. World v0.5 принят владельцем как docs-only рабо
 
 ## Текущий следующий шаг
 
-Текущий этап — review W1: проверить новую версию presentations, модель KROT и
-сохранение графа из 24 путей. До отдельного принятия W1 не менять runner,
-Java, Gradle, assets, visual slice, типизированное состояние, ресурсы или
-terminal states. W2, внешние прохождения `NG1`, следующий игровой день,
-Telegram, LLM в runtime и production-3D на этом шаге не начинаются.
+Текущий следующий этап — W2. Его реализация начинается только по отдельной
+явной задаче владельца. До неё не менять runner, Java, Gradle, assets, visual
+slice, типизированное состояние, ресурсы или terminal states. Внешние
+прохождения `NG1`, следующий игровой день, Telegram, LLM в runtime и
+production-3D на этом шаге не начинаются.
