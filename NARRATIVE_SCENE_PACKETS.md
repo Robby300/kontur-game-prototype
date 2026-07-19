@@ -3,16 +3,19 @@
 ## Версии, canonical IDs и defaults
 
 Все 19 записей используют `scenarioVersion=v0.4.0-n1` и
-`contentVersion=v0.4.0-n1-draft.3`. Канонические IDs: `NRV04-P01`…`NRV04-P19`
+`contentVersion=v0.4.0-n1-draft.4`. Канонические IDs: `NRV04-P01`…`NRV04-P19`
 и `NRV04-PR01`…`NRV04-PR19`. Короткие `P01`…`P19` и `PR01`…`PR19` — aliases,
 объявленные один раз здесь: `P01…P19 = NRV04-P01…NRV04-P19` попарно;
 `PR01…PR19 = NRV04-PR01…NRV04-PR19` попарно.
 
 ### terminology defaults
 
-Кассета — герметичный набор мембран; ниша — боковая камера Аши; рассол —
-агрессивная жидкость; «база» означает КОНТУР. Игровые имена машин: KROT и IGLA.
-В presentation не показываются служебные IDs, fingerprint или hidden state.
+КОНТУР — подземное убежище; «база» означает КОНТУР. Кассета — сменный блок
+фильтрующих мембран для очистителя воды; ниша — боковая камера Аши, инженера
+насосной; рассол — агрессивная жидкость. KROT и IGLA — автономные машины
+экспедиции: KROT — тяжёлая машина, способная удерживать затвор; IGLA — лёгкая
+машина с тросовым манипулятором. В presentation не показываются служебные IDs,
+fingerprint или hidden state.
 
 ### styleConstraints defaults
 
@@ -42,9 +45,9 @@ score, авторской оценки или импровизации. `PRESSUR
 
 | packetId / presentationId / sceneId / fp | ws; layout; chars | facts; unknown | prior; choices; risk |
 | --- | --- | --- | --- |
-| `NRV04-P01` / `NRV04-PR01` / `CALL` / `w1080-b240-ashaRadio-cassetteLocked-krotUpper-iglaUpper` | вода 18 ч, рассол 4 ч, Аша на радио, кассета locked, KROT/IGLA мостик; `LAYOUT-CALL`; Марина, Аша | Аша жива, кассета существует; выдержит ли затвор, успеют ли вывести Ашу и вынести кассету | initial; `KEEP_ASHA_ON_CHANNEL`, `VERIFY_CASSETTE_SEAL`; нет |
-| `NRV04-P02` / `NRV04-PR02` / `APPROACH` / `w1080-b240-callAsha-cassetteUnverified-routeOpen` | вода 18 ч, рассол 4 ч, кассета непроверена; `LAYOUT-APPROACH`; Марина, Аша, Рем | Аша слышала группу; герметичность и цена целой кассеты неизвестны | голосовой резерв израсходован; `ANCHOR_WITH_KROT`, `TETHER_WITH_IGLA`; `2d6+0`, коррозия/трос, пара скрыта |
-| `NRV04-P03` / `NRV04-PR03` / `APPROACH` / `w1080-b240-callSeal-cassetteVerified72-routeOpen` | вода 18 ч, рассол 4 ч, кассета verified; `LAYOUT-APPROACH`; Марина, Аша, Рем | целая кассета добавит 72 ч к остатку; выдержит ли маршрут | Аша была без голоса 4 мин; `ANCHOR_WITH_KROT`, `TETHER_WITH_IGLA`; `2d6+0`, коррозия/трос, пара скрыта |
+| `NRV04-P01` / `NRV04-PR01` / `CALL` / `w1080-b240-ashaRadio-cassetteLocked-krotUpper-iglaUpper` | КОНТУР — подземное убежище; очищенная вода закончится через 18 ч, рассол поднимется через 4 ч; Аша, инженер насосной, на радио; кассета locked; автономные KROT/IGLA на мостике; `LAYOUT-CALL`; Марина, Аша | Аша жива, кассета нужна очистителю воды; состояние кассеты и число дополнительных часов неизвестны | initial; `KEEP_ASHA_ON_CHANNEL`, `VERIFY_CASSETTE_SEAL`; нет |
+| `NRV04-P02` / `NRV04-PR02` / `APPROACH` / `w1080-b240-callAsha-cassetteUnverified-routeOpen` | вода 18 ч, рассол 4 ч, кассета непроверена; тяжёлый KROT и лёгкая IGLA на маршруте; `LAYOUT-APPROACH`; Марина, Аша, Рем | Аша слышала группу; герметичность и цена целой кассеты неизвестны | голосовой резерв израсходован; `ANCHOR_WITH_KROT`, `TETHER_WITH_IGLA`; `2d6+0`: 2–6 осложнение, 7–9 успех с ценой, 10–12 преимущество; шансы одинаковы, KROT рискует приводом и корродированной кромкой, IGLA — тросом со скрытой в мутном рассоле направляющей; пара и конкретный исход скрыты |
+| `NRV04-P03` / `NRV04-PR03` / `APPROACH` / `w1080-b240-callSeal-cassetteVerified72-routeOpen` | вода 18 ч, рассол 4 ч, кассета verified; тяжёлый KROT и лёгкая IGLA на маршруте; `LAYOUT-APPROACH`; Марина, Аша, Рем | целая кассета добавит 72 ч к остатку; выдержит ли маршрут | Аша была без голоса 4 мин; `ANCHOR_WITH_KROT`, `TETHER_WITH_IGLA`; `2d6+0`: 2–6 осложнение, 7–9 успех с ценой, 10–12 преимущество; шансы одинаковы, KROT рискует приводом и корродированной кромкой, IGLA — тросом со скрытой в мутном рассоле направляющей; пара и конкретный исход скрыты |
 | `NRV04-P04` / `NRV04-PR04` / `PRESSURE_SHAFT` / `w960-b120-anchor-krotDamagedNicheFlooding-cassetteReachable` | вода 16 ч, рассол 2 ч, KROT повреждён у кромки, ниша затапливается; `LAYOUT-ANCHOR`; Марина, Аша, Рем | кромка осыпалась; нельзя выполнить оба действия | маршрут=якорь; `PULL_ASHA_OUT`, `LOCK_CASSETTE_IN`; `2+3+0=5`, осложнение |
 | `NRV04-P05` / `NRV04-PR05` / `PRESSURE_SHAFT` / `w960-b120-anchor-krotStranded-cassetteCracked-ashaPlatform` | вода 16 ч, рассол 2 ч, KROT заклинило, Аша на площадке, кассета треснула; `LAYOUT-ANCHOR`; Марина, Аша | кассета добавит 36 ч; освободится ли KROT без обвала | маршрут=якорь; `SAVE_DAMAGED_CASSETTE`, `FREE_KROT`; `3+4+0=7`, цена |
 | `NRV04-P06` / `NRV04-PR06` / `PRESSURE_SHAFT` / `w960-b120-anchor-krotStrained-ashaSafe-cassetteSafe-bypassKnown` | вода 16 ч, рассол 2 ч, KROT под нагрузкой, Аша/кассета доступны, обход открыт; `LAYOUT-ANCHOR`; Марина, Аша, Рем | обход сухой; успеет ли «Каскад» | маршрут=якорь; `EVACUATE_THROUGH_BYPASS`, `SEAL_BYPASS_FOR_KASKAD`; `5+5+0=10`, преимущество |
